@@ -1,18 +1,28 @@
+# main.py
 
-def battery_is_ok(temperature, soc, charge_rate):
-  if temperature < 0 or temperature > 45:
-    print('Temperature is out of range!')
-    return False
-  elif soc < 20 or soc > 80:
-    print('State of Charge is out of range!')
-    return False
-  elif charge_rate > 0.8:
-    print('Charge rate is out of range!')
-    return False
+from battery_check import BatteryCheck
 
-  return True
+def run_tests():
+    assert BatteryCheck.battery_is_ok(25, 70, 0.7) == (True, "Battery is ok.")
+    assert BatteryCheck.battery_is_ok(50, 70, 0.7) == (False, "Battery parameter temperature out of range!")
+    assert BatteryCheck.battery_is_ok(25, 85, 0.7) == (False, "Battery parameter state of charge (SoC) out of range!")
+    assert BatteryCheck.battery_is_ok(25, 70, 0.9) == (False, "Battery parameter charge rate out of range!")
 
+    assert BatteryCheck.battery_is_ok(0, 70, 0.7) == (True, "Battery is ok.")
+    assert BatteryCheck.battery_is_ok(45, 70, 0.7) == (True, "Battery is ok.")
+    assert BatteryCheck.battery_is_ok(-1, 70, 0.7) == (False, "Battery parameter temperature out of range!")
+    assert BatteryCheck.battery_is_ok(46, 70, 0.7) == (False, "Battery parameter temperature out of range!")
+
+    assert BatteryCheck.battery_is_ok(25, 20, 0.7) == (True, "Battery is ok.")
+    assert BatteryCheck.battery_is_ok(25, 80, 0.7) == (True, "Battery is ok.")
+    assert BatteryCheck.battery_is_ok(25, 19, 0.7) == (False, "Battery parameter state of charge (SoC) out of range!")
+    assert BatteryCheck.battery_is_ok(25, 81, 0.7) == (False, "Battery parameter state of charge (SoC) out of range!")
+
+    assert BatteryCheck.battery_is_ok(25, 70, 0) == (True, "Battery is ok.")
+    assert BatteryCheck.battery_is_ok(25, 70, 0.8) == (True, "Battery is ok.")
+    assert BatteryCheck.battery_is_ok(25, 70, 0.9) == (False, "Battery parameter charge rate out of range!")
+
+    print("All tests passed!")
 
 if __name__ == '__main__':
-  assert(battery_is_ok(25, 70, 0.7) is True)
-  assert(battery_is_ok(50, 85, 0) is False)
+    run_tests()
